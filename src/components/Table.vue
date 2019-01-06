@@ -20,9 +20,9 @@
     <el-container>      
       <el-main>
         <div style="display: flex; justify-content: flex-end;">
-          <el-form :inline="true" :model="formInline" class="search-form-inline">
+          <el-form :inline="true" class="search-form-inline">
             <el-form-item>
-              <el-input v-model="formInline.query" placeholder="输入查询条件"></el-input>
+              <el-input v-model="searchTree" placeholder="输入查询条件"></el-input>
             </el-form-item>
             <el-form-item>
               <el-button type="primary" @click="onSubmit">查询</el-button>
@@ -128,16 +128,16 @@ export default {
     return {
       showTable: false,
       showTree: false,
-      tableData: [],
-      input: '',
-      database: '',
-      description: '',
-      type: '',
       dialogFormVisible: false,
-      formData: [],
-      formList: [],
-      menuList: [],
-      treeData: [{
+      searchTree: '', // 右上角搜索框的值
+      tableData: [], // 表格数据，异步取
+      database: '', // 左边menu点击收集的数据
+      description: '', // 左边menu点击收集的数据
+      type: '', // 左边menu点击收集的数据
+      formData: [], // 接口取浮层写死的数据
+      formList: [], // 新增的数据
+      menuList: [], // 接口取的，左边目录的数据
+      treeData: [{ // 接口取得树的数据
         label: '一级 1',
         children: [{
           label: '二级 1-1',
@@ -176,9 +176,7 @@ export default {
         children: 'children',
         label: 'label'
       },
-      formInline: {
-        query: ''
-      }
+      treeLevel: {} // 点击树的第三层，收集的三个label
     }
   },
 
@@ -196,34 +194,38 @@ export default {
       this.description = description
       this.showTable = true
     },
-    productClick (index, row) {
+    productClick (index, row) { // 点击产品按钮，出浮层
       this.dialogFormVisible = true
     },
-    handleClick (index, row) {
+    handleClick (index, row) { // 点击mock按钮，出浮层
       this.dialogFormVisible = true
     },
-    addForm () {
+    addForm () { // 增加一行浮层表单
       this.formData.push({})
     },
-    removeFormList (item, index) {
+    removeFormList (item, index) { // 删除写死的浮层一行
       this.formList.splice(index, 1)
     },
-    removeFormData (item, index) {
+    removeFormData (item, index) { // 删除新增的浮层一行
       this.formData.splice(index, 1)
     },
-    submitFormData (index, item) {
+    submitFormData (index, item) { // 提交新增的一行
       console.log(index, item)
     },
-    handleNodeClick(data) {
-      console.log(data)
+    handleNodeClick({label}, obj) { // 点击树第三层处理函数
+      if (obj.childNodes.length) return
+      this.treeLevel.first = obj.parent.parent.data.label
+      this.treeLevel.second = obj.parent.data.label
+      this.treeLevel.third = label
       this.showTree = false
       this.showTable = true
     },
-    onSubmit () {
+    onSubmit () { // 右上角搜索按钮的处理函数
+      console.log(this.searchTree)
       this.showTree = true
       this.showTable = false
     },
-    tableRowClassName ({row, rowIndex}) {
+    tableRowClassName ({row, rowIndex}) { // 控制某一行要不要高亮，根据行内容和第几行
       console.log(row, rowIndex)
       return 'success-row'
     }
