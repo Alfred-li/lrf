@@ -120,6 +120,9 @@
 import menuJson from '../json/menu.json'
 import tableJson from '../json/table.json'
 import formJson from '../json/form.json'
+import axios from 'axios'
+//import {get} from './helpers'
+
 export default {
   data () {
     return {
@@ -177,13 +180,23 @@ export default {
       }
     }
   },
-
+  created () {
+    axios.get('http://localhost:8080/data/menu').then(
+      response => {
+        console.info(response)
+        if (response.data.data.code === 200) {
+          alert('OK')
+        } else {
+          alert('fail')
+        }
+      }
+    )
+  },
   beforeMount () {
     this.menuList = menuJson.data
     this.tableData = tableJson.data
     this.formList = formJson
   },
-
   methods: {
     renderTable ({type, description}) {
       this.type = type

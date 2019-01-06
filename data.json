@@ -1,0 +1,83 @@
+{
+    "menu": {
+        "code":200,
+        "data":[
+            {
+                "database":"online",
+                "tables":[
+                    {
+                        "tableName":"tb1",
+                        "type":"实时",
+                        "description":"手机存货量实时表"
+                    },
+                    {
+                        "tableName":"tb2",
+                        "type":"实时",
+                        "description":"电脑存货量实时表"
+                    }
+                ]
+            },
+            {
+                "database":"offline",
+                "tables":[
+                    {
+                        "tableName":"tb1",
+                        "type":"离线",
+                        "description":"离线表1"
+                    },
+                    {
+                        "tableName":"tb2",
+                        "type":"离线",
+                        "description":"离线表2"
+                    }
+                ]
+            }
+        ]
+    },
+    "table": {
+        "code":200,
+        "data":[
+            {
+                "field":"字段",
+                "cnName":"中文名",
+                "metamapNo":"图谱编号",
+                "metamapVersion":"图谱版本",
+                "type":"字段属性",
+                "metamapSql":"图谱sql",
+                "remark":"备注",
+                "queryCode":"queryCode"
+            },
+            {
+                "field":"card_account",
+                "cnName":"卡量",
+                "metamapNo":"xxxyyy",
+                "metamapVersion":"v1",
+                "type":"字段类型",
+                "metamapSql":"图谱sql",
+                "remark":"备注",
+                "queryCode":"queryCode"
+            }
+        ]
+      },
+      "form":  {
+        "code": 200,
+        "data":   
+        [
+        {
+            "id": 1,
+            "groupName": "风神-骑手分析",
+            "indicatorName": "完成单",
+            "indicatorCode": "xxxyyy",
+            "valueType": 1,
+            "calType": 1
+        }, {
+            "id": 2,
+            "groupName": "风神-骑手分析",
+            "indicatorName": "有效完成单",
+            "indicatorCode": "xxxyyy11",
+            "valueType": 1,
+            "calType": 1
+        }
+    ]}
+    
+}
