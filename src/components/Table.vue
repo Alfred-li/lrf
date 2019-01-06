@@ -11,7 +11,7 @@
             v-for="(sub, index2) in item.tables"
             :key="index2"
             :index="`${index1}-${index2}`"
-            @click="renderTable(sub)"
+            @click="renderTable(item, sub)"
             >{{ sub.tableName }}</el-menu-item>
         </el-submenu>
       </el-menu>
@@ -34,7 +34,7 @@
             <div class="table-title">{{ type }} {{ description }}</div>
           </el-col>
         </el-row>
-        <el-table v-show="showTable" :data="tableData">
+        <el-table v-show="showTable" :data="tableData" :row-class-name="tableRowClassName">
           <el-table-column prop="field" label="字段"/>
           <el-table-column prop="cnName" label="中文名"/>
           <el-table-column prop="metamapNo" label="图谱编号"/>
@@ -105,8 +105,11 @@
               </el-select>
             </el-form-item>
           </el-col>
-          <el-col :span="4">
+          <el-col :span="2">
             <div @click="removeFormData(index)"><i class="el-icon-error"/></div>
+          </el-col>
+          <el-col :span="2">
+            <div @click="submitFormData(index, item)"><i class="el-icon-success"/></div>
           </el-col>
         </el-form>
       </el-row>
@@ -127,6 +130,7 @@ export default {
       showTree: false,
       tableData: [],
       input: '',
+      database: '',
       description: '',
       type: '',
       dialogFormVisible: false,
@@ -159,7 +163,7 @@ export default {
         children: [{
           label: '二级 3-1',
           children: [{
-            label: '三级 3-1-1'
+            label: '三级 <span style="color: red;">红色</span>3-1-1'
           }]
         }, {
           label: '二级 3-2',
@@ -185,7 +189,9 @@ export default {
   },
 
   methods: {
-    renderTable ({type, description}) {
+    renderTable ({database}, {type, description}) {
+      console.log(database, type, description)
+      this.database = database
       this.type = type
       this.description = description
       this.showTable = true
@@ -205,6 +211,9 @@ export default {
     removeFormData (item, index) {
       this.formData.splice(index, 1)
     },
+    submitFormData (index, item) {
+      console.log(index, item)
+    },
     handleNodeClick(data) {
       console.log(data)
       this.showTree = false
@@ -213,6 +222,10 @@ export default {
     onSubmit () {
       this.showTree = true
       this.showTable = false
+    },
+    tableRowClassName ({row, rowIndex}) {
+      console.log(row, rowIndex)
+      return 'success-row'
     }
   }
 }
@@ -233,5 +246,9 @@ export default {
 
   .el-aside {
     color: #333;
+  }
+
+  .el-table .success-row {
+    background: #f0f9eb;
   }
 </style>
