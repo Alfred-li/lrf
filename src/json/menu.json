@@ -1,0 +1,35 @@
+{
+  "code":200,
+  "data":[
+      {
+          "database":"online",
+          "tables":[
+              {
+                  "tableName":"tb1",
+                  "type":"实时",
+                  "description":"手机存货量实时表"
+              },
+              {
+                  "tableName":"tb2",
+                  "type":"实时",
+                  "description":"电脑存货量实时表"
+              }
+          ]
+      },
+      {
+          "database":"offline",
+          "tables":[
+              {
+                  "tableName":"tb1",
+                  "type":"离线",
+                  "description":"离线表1"
+              },
+              {
+                  "tableName":"tb2",
+                  "type":"离线",
+                  "description":"离线表2"
+              }
+          ]
+      }
+  ]
+}

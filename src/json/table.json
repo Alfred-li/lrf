@@ -1,0 +1,25 @@
+{
+  "code":200,
+  "data":[
+      {
+          "field":"字段",
+          "cnName":"中文名",
+          "metamapNo":"图谱编号",
+          "metamapVersion":"图谱版本",
+          "type":"字段属性",
+          "metamapSql":"图谱sql",
+          "remark":"备注",
+          "queryCode":"queryCode"
+      },
+      {
+          "field":"card_account",
+          "cnName":"卡量",
+          "metamapNo":"xxxyyy",
+          "metamapVersion":"v1",
+          "type":"字段类型",
+          "metamapSql":"图谱sql",
+          "remark":"备注",
+          "queryCode":"queryCode"
+      }
+  ]
+}

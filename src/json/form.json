@@ -1,0 +1,17 @@
+[
+	{
+		"id": 1,
+		"groupName": "风神-骑手分析",
+		"indicatorName": "完成单",
+		"indicatorCode": "xxxyyy",
+		"valueType": 1,
+		"calType": 1
+	}, {
+		"id": 2,
+		"groupName": "风神-骑手分析",
+		"indicatorName": "有效完成单",
+		"indicatorCode": "xxxyyy11",
+		"valueType": 1,
+		"calType": 1
+	}
+]
