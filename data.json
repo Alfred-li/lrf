@@ -112,5 +112,13 @@
     "indicator":[
         {"code": "更新1", "name": "更新名称1"},
         {"code": "更新2", "name": "更新名称2"}
+    ],
+    "groupData": [
+        {"code": "组1", "name": "远端组1"},
+        {"code": "组2", "name": "远端组2"}
+    ],
+    "appData": [
+        {"code": "1", "name": "第一个"},
+        {"code": "2", "name": "第二个"}
     ]
 }

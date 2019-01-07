@@ -84,7 +84,7 @@
             <el-form-item style="width: 25%; margin: 0">
               <el-select v-model="item.app" 
                 placeholder="请选择应用"
-                @change="selectApp(item)">
+                @change="selectGroup(item)">
                 <el-option 
                   v-for="app in appList"
                   :label="app.name"
@@ -93,18 +93,14 @@
                 ></el-option>
               </el-select>
             </el-form-item>
-            <!-- <el-form-item style="width: 25%; margin: 0">
-              <el-select v-model="item.a" placeholder="请选择活动区域">
-                <el-option label="区域一" value="shanghai"></el-option>
-                <el-option label="区域二" value="beijing"></el-option>
-              </el-select>
-            </el-form-item> -->
             <el-form-item style="width: 25%; margin: 0">
-              <el-select v-model="item.valueType" placeholder="请选择属性" @change="selectApp(item)">
-                <el-option label="单" value="1"></el-option>
-                <el-option label="百分比(小数)" value="2"></el-option>
-                <el-option label="时间" value="3"></el-option>
-                <el-option label="金钱" value="4"></el-option>
+              <el-select v-model="item.groupCode" placeholder="请选择组" @change="selectIndicator(item)">
+                <el-option 
+                  v-for="group in groupList"
+                  :label="group.name"
+                  :key="group.code"
+                  :value="group.code"
+                ></el-option>
               </el-select>
             </el-form-item>
             <el-form-item style="width: 25%; margin: 0">
@@ -144,7 +140,7 @@ import menuJson from '../json/menu.json'
 import tableJson from '../json/table.json'
 import formJson from '../json/form.json'
 import axios from 'axios'
-import { getMenu, getTable, getForm, getTreeData, getIndicator } from 'api'
+import { getMenu, getTable, getForm, getTreeData, getIndicator, getGroups, getApp } from 'api'
 import {baseUrl} from 'api/helpers.js'
 
 export default {
@@ -163,7 +159,8 @@ export default {
       formList: [], // 新增的数据
       menuList: [], // 接口取的，左边目录的数据
       treeData: [],
-      appList: [{code: "1", name: "第一个"}, {code: "2", name: "第二个"}],
+      groupList: [],
+      appList: [],
       indicatorList: [],
       defaultProps: {
         children: 'children',
@@ -195,7 +192,9 @@ export default {
       this.formData = []
       getForm({queryCode: row.queryCode}).then((data) => {
         this.formList = data
+        this.selectApp()
       })
+      
       this.dialogFormVisible = true
     },
     handleClick (index, row) { // 点击mock按钮，出浮层
@@ -237,12 +236,26 @@ export default {
       })
       
     },
-    selectApp(item) {
-      if (item.app === undefined || item.valueType === undefined) {
-        console.log("un...")
+    selectApp() {
+      getApp().then((data) => {
+        this.appList = data;
+      })
+    },
+    // 根据应用 选组
+    selectGroup(item) {
+      if (item.app === undefined) {
+        return
+      } else {
+        getGroups({"app": item.app}).then((data) => {
+          this.groupList = data;
+        })
+      }
+    },
+    selectIndicator(item) {
+      if (item.app === undefined || item.groupCode === undefined) {
         this.indicatorList = [];
       } else {
-        getIndicator({appCode: item.app, valueType: item.valueType}).then((data) => {
+        getIndicator({appCode: item.app, groupCode: item.groupCode}).then((data) => {
           this.indicatorList = data;
         });
       }

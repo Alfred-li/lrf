@@ -6,6 +6,8 @@ const table=data.table
 const form=data.form
 const treeData=data.treeData
 const indicator=data.indicator
+const groupData=data.groupData
+const appData=data.appData
 
 function resolve(dir) {
     return path.join(__dirname, dir)
@@ -39,10 +41,22 @@ module.exports = {
               });
           }),
           app.get('/data/indicator', function(req, res) {
-              res.json({
+                res.json({
                   code: 0,
                   data: indicator
-              });
+                });
+          }),
+          app.get('/data/group', function(req, res) {
+                res.json({
+                    code: 0,
+                    data: groupData
+                })
+          }),
+          app.get('/data/app', function(req, res) {
+                res.json({
+                    code: 0,
+                    data: appData
+                })
           })
       }
     },
