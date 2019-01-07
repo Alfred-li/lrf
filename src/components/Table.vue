@@ -22,7 +22,7 @@
         <div style="display: flex; justify-content: flex-end;">
           <el-form :inline="true" class="search-form-inline">
             <el-form-item>
-              <el-input v-model="searchTree" placeholder="输入查询条件"></el-input>
+              <el-input v-model="content" placeholder="输入查询条件"></el-input>
             </el-form-item>
             <el-form-item>
               <el-button type="primary" @click="onSubmit">查询</el-button>
@@ -53,6 +53,7 @@
           <el-table-column label="操作">
             <template slot-scope="scope">
               <el-button
+                disabled="disabled"
                 size="mini"
                 @click="handleClick(scope.$index, scope.row)">mock</el-button>
             </template>
@@ -81,27 +82,46 @@
           :model="item" :inline="true" size="mini">
           <el-col :span="20">
             <el-form-item style="width: 25%; margin: 0">
+              <el-select v-model="item.app" 
+                placeholder="请选择应用"
+                @change="selectApp(item)">
+                <el-option 
+                  v-for="app in appList"
+                  :label="app.name"
+                  :key="app.code"
+                  :value="app.code"
+                ></el-option>
+              </el-select>
+            </el-form-item>
+            <!-- <el-form-item style="width: 25%; margin: 0">
               <el-select v-model="item.a" placeholder="请选择活动区域">
                 <el-option label="区域一" value="shanghai"></el-option>
                 <el-option label="区域二" value="beijing"></el-option>
               </el-select>
-            </el-form-item>
+            </el-form-item> -->
             <el-form-item style="width: 25%; margin: 0">
-              <el-select v-model="item.b" placeholder="请选择活动区域">
-                <el-option label="区域一" value="shanghai"></el-option>
-                <el-option label="区域二" value="beijing"></el-option>
+              <el-select v-model="item.valueType" placeholder="请选择属性" @change="selectApp(item)">
+                <el-option label="单" value="1"></el-option>
+                <el-option label="百分比(小数)" value="2"></el-option>
+                <el-option label="时间" value="3"></el-option>
+                <el-option label="金钱" value="4"></el-option>
               </el-select>
             </el-form-item>
             <el-form-item style="width: 25%; margin: 0">
-              <el-select v-model="item.c" placeholder="请选择活动区域">
-                <el-option label="区域一" value="shanghai"></el-option>
-                <el-option label="区域二" value="beijing"></el-option>
+              <el-select v-model="item.indicatorCode" placeholder="请选择指标">
+                <el-option 
+                  v-for="indicator in indicatorList"
+                  :label="indicator.name"
+                  :key="indicator.code"
+                  :value="indicator.code"
+                ></el-option>
               </el-select>
             </el-form-item>
             <el-form-item style="width: 25%; margin: 0">
-              <el-select v-model="item.d" placeholder="请选择活动区域">
-                <el-option label="区域一" value="shanghai"></el-option>
-                <el-option label="区域二" value="beijing"></el-option>
+              <el-select v-model="item.type" placeholder="请选择类型">
+                <el-option label="分子" value="1"></el-option>
+                <el-option label="分母" value="2"></el-option>
+                <el-option label="全部" value="3"></el-option>
               </el-select>
             </el-form-item>
           </el-col>
@@ -113,7 +133,7 @@
           </el-col>
         </el-form>
       </el-row>
-      <el-button @click="addForm">新 增</el-button>
+      <el-button @click="addForm()">新 增</el-button>
     </el-dialog>
   </el-container>
 </template>
@@ -124,7 +144,8 @@ import menuJson from '../json/menu.json'
 import tableJson from '../json/table.json'
 import formJson from '../json/form.json'
 import axios from 'axios'
-//import {get} from './helpers'
+import { getMenu, getTable, getForm, getTreeData, getIndicator } from 'api'
+import {baseUrl} from 'api/helpers.js'
 
 export default {
   data () {
@@ -132,49 +153,18 @@ export default {
       showTable: false,
       showTree: false,
       dialogFormVisible: false,
-      searchTree: '', // 右上角搜索框的值
+      content: '', // 右上角搜索框的值
       tableData: [], // 表格数据，异步取
+      queryCode: '',
       database: '', // 左边menu点击收集的数据
       description: '', // 左边menu点击收集的数据
       type: '', // 左边menu点击收集的数据
       formData: [], // 接口取浮层写死的数据
       formList: [], // 新增的数据
       menuList: [], // 接口取的，左边目录的数据
-      treeData: [{ // 接口取得树的数据
-        label: '一级 1',
-        children: [{
-          label: '二级 1-1',
-          children: [{
-            label: '三级 1-1-1'
-          }]
-        }]
-      }, {
-        label: '一级 2',
-        children: [{
-          label: '二级 2-1',
-          children: [{
-            label: '三级 2-1-1'
-          }]
-        }, {
-          label: '二级 2-2',
-          children: [{
-            label: '三级 2-2-1'
-          }]
-        }]
-      }, {
-        label: '一级 3',
-        children: [{
-          label: '二级 3-1',
-          children: [{
-            label: '三级 <span style="color: red;">红色</span>3-1-1'
-          }]
-        }, {
-          label: '二级 3-2',
-          children: [{
-            label: '三级 3-2-1'
-          }]
-        }]
-      }],
+      treeData: [],
+      appList: [{code: "1", name: "第一个"}, {code: "2", name: "第二个"}],
+      indicatorList: [],
       defaultProps: {
         children: 'children',
         label: 'label'
@@ -183,47 +173,79 @@ export default {
     }
   },
   created () {
-    axios.get('http://localhost:8080/data/menu').then(
-      response => {
-        console.info(response)
-        if (response.data.data.code === 200) {
-          alert('OK')
-        } else {
-          alert('fail')
-        }
-      }
-    )
+    this._getMenu()
   },
   beforeMount () {
-    this.menuList = menuJson.data
-    this.tableData = tableJson.data
-    this.formList = formJson
   },
   methods: {
-    renderTable ({database}, {type, description}) {
-      console.log(database, type, description)
-      this.database = database
-      this.type = type
-      this.description = description
+    _getMenu() {
+      getMenu({}).then((data) => {
+        this.menuList = data
+      })
+    },
+    renderTable ({database}, {tableName}) {
+      getTable({database: database, table: tableName}).then((data) => {
+        this.tableData = data
+      })
       this.showTable = true
+      return
     },
     productClick (index, row) { // 点击产品按钮，出浮层
+      this.formList = []
+      this.formData = []
+      getForm({queryCode: row.queryCode}).then((data) => {
+        this.formList = data
+      })
       this.dialogFormVisible = true
     },
     handleClick (index, row) { // 点击mock按钮，出浮层
-      this.dialogFormVisible = true
     },
     addForm () { // 增加一行浮层表单
       this.formData.push({})
     },
     removeFormList (item, index) { // 删除写死的浮层一行
-      this.formList.splice(index, 1)
+      let url = baseUrl + "delete/" + item.id
+      axios.delete(url, {})
+           .then((res) => {
+             this.initForms()
+           })
+           .catch((err) => {
+             this.initForms()
+           });
     },
-    removeFormData (item, index) { // 删除新增的浮层一行
+    initForms() {
+      this.formList = []
+      this.productClick({}, {queryCode: this.queryCode})
+    },
+    removeFormData (index) { // 删除新增的浮层一行
+      this.formData = []
       this.formData.splice(index, 1)
     },
     submitFormData (index, item) { // 提交新增的一行
-      console.log(index, item)
+      let url = baseUrl + 'create'
+      if (this.queryCode === undefined || item.indicatorCode === undefined || item.app === undefined) {
+        alert(" 请选择必要参数 ")
+        return
+      }
+      this.formData = []
+      axios.post(url, {"queryCode": this.queryCode, "indicatorCode": item.indicatorCode, "appCode": item.app})
+      .then((data) => {
+        this.productClick({}, {queryCode: this.queryCode})
+      })
+      .catch((err) => {
+        this.productClick({}, {queryCode: this.queryCode})
+      })
+      
+    },
+    selectApp(item) {
+      if (item.app === undefined || item.valueType === undefined) {
+        console.log("un...")
+        this.indicatorList = [];
+      } else {
+        getIndicator({appCode: item.app, valueType: item.valueType}).then((data) => {
+          this.indicatorList = data;
+        });
+      }
     },
     handleNodeClick({label}, obj) { // 点击树第三层处理函数
       if (obj.childNodes.length) return
@@ -234,12 +256,13 @@ export default {
       this.showTable = true
     },
     onSubmit () { // 右上角搜索按钮的处理函数
-      console.log(this.searchTree)
+      getTreeData({content: this.content}).then((data) => {
+        this.treeData = data
+      })
       this.showTree = true
       this.showTable = false
     },
     tableRowClassName ({row, rowIndex}) { // 控制某一行要不要高亮，根据行内容和第几行
-      console.log(row, rowIndex)
       return 'success-row'
     }
   }

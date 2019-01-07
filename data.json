@@ -1,71 +1,62 @@
 {
-    "menu": {
-        "code":200,
-        "data":[
-            {
-                "database":"online",
-                "tables":[
-                    {
-                        "tableName":"tb1",
-                        "type":"实时",
-                        "description":"手机存货量实时表"
-                    },
-                    {
-                        "tableName":"tb2",
-                        "type":"实时",
-                        "description":"电脑存货量实时表"
-                    }
-                ]
-            },
-            {
-                "database":"offline",
-                "tables":[
-                    {
-                        "tableName":"tb1",
-                        "type":"离线",
-                        "description":"离线表1"
-                    },
-                    {
-                        "tableName":"tb2",
-                        "type":"离线",
-                        "description":"离线表2"
-                    }
-                ]
-            }
-        ]
-    },
-    "table": {
-        "code":200,
-        "data":[
-            {
-                "field":"字段",
-                "cnName":"中文名",
-                "metamapNo":"图谱编号",
-                "metamapVersion":"图谱版本",
-                "type":"字段属性",
-                "metamapSql":"图谱sql",
-                "remark":"备注",
-                "queryCode":"queryCode"
-            },
-            {
-                "field":"card_account",
-                "cnName":"卡量",
-                "metamapNo":"xxxyyy",
-                "metamapVersion":"v1",
-                "type":"字段类型",
-                "metamapSql":"图谱sql",
-                "remark":"备注",
-                "queryCode":"queryCode"
-            }
-        ]
-      },
-      "form":  {
-        "code": 200,
-        "data":   
-        [
+    "menu": [
+        {
+            "database":"online-表",
+            "tables":[
+                {
+                    "tableName":"tb1",
+                    "type":"实时",
+                    "description":"手机存货量实时表"
+                },
+                {
+                    "tableName":"tb2",
+                    "type":"实时",
+                    "description":"电脑存货量实时表"
+                }
+            ]
+        },
+        {
+            "database":"offline-表",
+            "tables":[
+                {
+                    "tableName":"tb1",
+                    "type":"离线",
+                    "description":"离线表1"
+                },
+                {
+                    "tableName":"tb2",
+                    "type":"离线",
+                    "description":"离线表2"
+                }
+            ]
+        }
+    ],
+    "table": [
+        {
+            "field":"1",
+            "cnName":"2",
+            "metamapNo":"3",
+            "metamapVersion":"4",
+            "type":"5",
+            "metamapSql":"6",
+            "remark":"7",
+            "queryCode":"8"
+        },
+        {
+            "field":"a",
+            "cnName":"b",
+            "metamapNo":"c",
+            "metamapVersion":"d",
+            "type":"e",
+            "metamapSql":"f",
+            "remark":"g",
+            "queryCode":"h"
+        }
+    ],
+    "form": [
         {
             "id": 1,
-            "groupName": "风神-骑手分析",
+            "groupName": "风神-骑手分析11",
             "indicatorName": "完成单",
             "indicatorCode": "xxxyyy",
             "valueType": 1,
@@ -78,6 +69,48 @@
             "valueType": 1,
             "calType": 1
         }
-    ]}
-    
+    ],
+    "treeData": [
+        {
+            "label": "一级 1",
+            "children": [{
+                "children": [{
+                "label": "二级 1-1",
+                "children": [{
+                    "label": "三级 1-1-1"
+                }]
+            }]
+        }, 
+        {
+            "label": "一级 2",
+            "children": [{
+                "label": "二级 2-1",
+                "children": [{
+                    "label": "三级 2-1-1"
+            }]
+        }, {
+            "label": "二级 2-2",
+            "children": [{
+                "label": "三级 2-2-1"
+          }]
+        }]
+      }, {
+        "label": "一级 3",
+        "children": [{
+            "label": "二级 3-1",
+            "children": [{
+                "label": "三级 <span style='color: red;'>红色</span>3-1-1"
+          }]
+        }, {
+            "label": "二级 3-2",
+            "children": [{
+                "label": "三级 3-2-1"
+          }]
+        }]
+      }]
+    }],
+    "indicator":[
+        {"code": "更新1", "name": "更新名称1"},
+        {"code": "更新2", "name": "更新名称2"}
+    ]
 }

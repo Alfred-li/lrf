@@ -7,12 +7,12 @@
               {
                   "tableName":"tb1",
                   "type":"实时",
-                  "description":"手机存货量实时表"
+                  "description":"实时表1"
               },
               {
                   "tableName":"tb2",
                   "type":"实时",
-                  "description":"电脑存货量实时表"
+                  "description":"实时表2"
               }
           ]
       },
