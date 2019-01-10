@@ -2,7 +2,7 @@ import axios from 'axios'
 
 const urlMap = {
   development: '/',
-  production: 'http://apollo.ele.me/apollo_support/'
+  production: '/apollo_support/'
 }
 export const baseUrl = urlMap[process.env.NODE_ENV]
 const ERR_OK = 0

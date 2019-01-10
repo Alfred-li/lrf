@@ -1,7 +1,7 @@
 <template>
   <el-container style="border: 1px solid #eee">
     <el-aside width="200px" style="background-color: rgb(238, 241, 246)">
-      <el-menu>
+      <el-menu :default-openeds="openList">
         <el-submenu
           v-for="(item, index1) in menuList"
           :key="index1"
@@ -10,6 +10,7 @@
           <el-menu-item
             v-for="(sub, index2) in item.tables"
             :key="index2"
+            :class="sub.isActive"
             :index="`${index1}-${index2}`"
             @click="renderTable(item, sub)"
             >{{ sub.tableName }}</el-menu-item>
@@ -38,11 +39,11 @@
           <el-table-column prop="field" label="字段"/>
           <el-table-column prop="cnName" label="中文名"/>
           <el-table-column prop="metamapNo" label="图谱编号"/>
-          <el-table-column prop="metamapVersion" label="图谱版本"/>
+          <el-table-column v-if="false" prop="metamapVersion" label="图谱版本" />
           <el-table-column prop="type" label="字段属性"/>
-          <el-table-column prop="metamapSql" label="图谱SQL"/>
-          <el-table-column prop="remark" label="备注"/>
-          <el-table-column prop="queryCode" label="queryCode"/>
+          <el-table-column v-if="false" prop="metamapSql" label="图谱SQL"/>
+          <el-table-column v-if="false" prop="remark" label="备注"/>
+          <el-table-column v-if="false" prop="queryCode" label="queryCode"/>
           <el-table-column label="产品">
             <template slot-scope="scope">
               <el-button
@@ -58,6 +59,7 @@
                 @click="handleClick(scope.$index, scope.row)">mock</el-button>
             </template>
           </el-table-column>
+          <el-table-column prop="fieldCode" v-if="false" />
         </el-table>
         <el-tree
           v-show="showTree"
@@ -69,10 +71,11 @@
 
     <el-dialog title="选择对应产品" :visible.sync="dialogFormVisible" width="80%">
       <el-row v-for="(item, index) in formList" :key="index">
-        <el-col :span="5">{{ item.id }}</el-col>
+        <el-col :span="5">{{ item.appName }}</el-col>
         <el-col :span="5">{{ item.groupName }}</el-col>
         <el-col :span="5">{{ item.indicatorName }}</el-col>
-        <el-col :span="5">{{ item.indicatorCode }}</el-col>
+        <el-col :span="5">{{ item.type }}</el-col>
+        <el-col :span="5" v-if="false">{{ item.id }}</el-col>
         <el-col :span="4"><div @click="removeFormList(item, index)"><i class="el-icon-error"/></div></el-col>
       </el-row>
       <el-row>
@@ -140,18 +143,22 @@ import menuJson from '../json/menu.json'
 import tableJson from '../json/table.json'
 import formJson from '../json/form.json'
 import axios from 'axios'
-import { getMenu, getTable, getForm, getTreeData, getIndicator, getGroups, getApp } from 'api'
+import { getMenu, getField, getForm, getTreeData, getIndicator, getGroups, getApp } from 'api'
 import {baseUrl} from 'api/helpers.js'
+var qs = require('qs');
 
 export default {
   data () {
     return {
       showTable: false,
+      index: 0,
+      openList: [],
       showTree: false,
       dialogFormVisible: false,
       content: '', // 右上角搜索框的值
       tableData: [], // 表格数据，异步取
       queryCode: '',
+      fieldCode: '',
       database: '', // 左边menu点击收集的数据
       description: '', // 左边menu点击收集的数据
       type: '', // 左边menu点击收集的数据
@@ -180,8 +187,10 @@ export default {
         this.menuList = data
       })
     },
-    renderTable ({database}, {tableName}) {
-      getTable({database: database, table: tableName}).then((data) => {
+    renderTable ({database}, sub) {
+      this.description = sub.description
+      this.type = sub.type
+      getField({database: database, table: sub.tableName}).then((data) => {
         this.tableData = data
       })
       this.showTable = true
@@ -190,7 +199,8 @@ export default {
     productClick (index, row) { // 点击产品按钮，出浮层
       this.formList = []
       this.formData = []
-      getForm({queryCode: row.queryCode}).then((data) => {
+      this.fieldCode = row.fieldCode
+      getForm({fieldCode: this.fieldCode}).then((data) => {
         this.formList = data
         this.selectApp()
       })
@@ -203,8 +213,8 @@ export default {
       this.formData.push({})
     },
     removeFormList (item, index) { // 删除写死的浮层一行
-      let url = baseUrl + "delete/" + item.id
-      axios.delete(url, {})
+      let url = baseUrl + "indicator/visual/mapping/" + item.id + "/del.do"
+      axios.delete(url, {"data": {"fieldCode": this.fieldCode }})
            .then((res) => {
              this.initForms()
            })
@@ -214,25 +224,29 @@ export default {
     },
     initForms() {
       this.formList = []
-      this.productClick({}, {queryCode: this.queryCode})
+      this.productClick({}, {"fieldCode": this.fieldCode})
     },
     removeFormData (index) { // 删除新增的浮层一行
       this.formData = []
       this.formData.splice(index, 1)
     },
     submitFormData (index, item) { // 提交新增的一行
-      let url = baseUrl + 'create'
-      if (this.queryCode === undefined || item.indicatorCode === undefined || item.app === undefined) {
+      let url = baseUrl + 'indicator/visual/mapping.do'
+      if (this.fieldCode === undefined || item.indicatorCode === undefined || item.groupCode === undefined || item.type === undefined) {
         alert(" 请选择必要参数 ")
         return
       }
       this.formData = []
-      axios.post(url, {"queryCode": this.queryCode, "indicatorCode": item.indicatorCode, "appCode": item.app})
+      axios.post(url, qs.stringify({"fieldCode": this.fieldCode, "indicatorCode": item.indicatorCode, "groupCode": item.groupCode, "type": item.type}),{
+          headers: {
+                'Content-Type': 'application/x-www-form-urlencoded'
+          },
+      })
       .then((data) => {
-        this.productClick({}, {queryCode: this.queryCode})
+        this.productClick({}, {fieldCode: this.fieldCode})
       })
       .catch((err) => {
-        this.productClick({}, {queryCode: this.queryCode})
+        this.productClick({}, {fieldCode: this.fieldCode})
       })
       
     },
@@ -260,11 +274,28 @@ export default {
         });
       }
     },
-    handleNodeClick({label}, obj) { // 点击树第三层处理函数
-      if (obj.childNodes.length) return
-      this.treeLevel.first = obj.parent.parent.data.label
-      this.treeLevel.second = obj.parent.data.label
-      this.treeLevel.third = label
+    handleNodeClick(item, node, self) { // 点击树第三层处理函数
+      if (node.childNodes.length) return
+      this.treeLevel.third = node.label
+      this.treeLevel.second = node.parent.label
+      this.treeLevel.first = node.parent.parent.label
+
+      for (var i=0;i<this.menuList.length;i++) {
+        if (this.menuList[i] != undefined && this.menuList[i].database == this.treeLevel.first) {
+          this.openList.push(i.toString())
+          var mts = this.menuList[i].tables;
+          for (var h=0;h<mts.length;h++) {
+              if (this.treeLevel.second === mts[h].tableName) {
+                mts[h].isActive = 'is-active'
+                this.renderTable({"database": this.treeLevel.first}, mts[h])
+              }
+          }
+          
+        }
+      } 
+
+      
+
       this.showTree = false
       this.showTable = true
     },
@@ -272,6 +303,7 @@ export default {
       getTreeData({content: this.content}).then((data) => {
         this.treeData = data
       })
+      this.openList = []
       this.showTree = true
       this.showTable = false
     },

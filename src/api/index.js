@@ -1,16 +1,16 @@
 import { get } from './helpers'
 
-const getMenu = get('data/menu')
-const getTable = get('data/table')
-const getForm = get('data/form')
-const getTreeData = get('data/treeData')
-const getIndicator = get('data/indicator')
-const getGroups = get('data/group')
-const getApp = get('data/app')
+const getMenu = get('indicator/visual/tables.do')
+const getField = get('indicator/visual/fields.do')
+const getForm = get('indicator/visual/mapping/query.do')
+const getTreeData = get('indicator/visual/content.do')
+const getIndicator = get('indicator/visual/mapping/indicator.do')
+const getGroups = get('indicator/visual/mapping/group.do')
+const getApp = get('indicator/visual/mapping/app.do')
 
 export {
   getMenu,
-  getTable,
+  getField,
   getForm,
   getTreeData,
   getIndicator,

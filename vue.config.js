@@ -2,7 +2,7 @@ const webpack = require('webpack')
 const path = require('path')
 const data=require('./data.json')
 const menu=data.menu
-const table=data.table
+const field=data.field
 const form=data.form
 const treeData=data.treeData
 const indicator=data.indicator
@@ -16,43 +16,43 @@ function resolve(dir) {
 module.exports = {
     devServer: {
       before(app) {
-          app.get('/data/menu', function(req, res) {
+          app.get('/indicator/visual/tables.do', function(req, res) {
              res.json({
                  code: 0,
                  data: menu
                 })   
           });
-          app.get('/data/table', function(req, res) {
+          app.get('/indicator/visual/fields.do', function(req, res) {
               res.json({
                 code: 0,
-                data: table
+                data: field
               });
           });
-          app.get('/data/form', function(req, res) {
+          app.get('/indicator/visual/mapping/query.do', function(req, res) {
               res.json({
                 code: 0,
                 data: form
               });
           }),
-          app.get('/data/treeData', function(req, res) {
+          app.get('/indicator/visual/content.do', function(req, res) {
             res.json({
                 code: 0,
                 data: treeData
               });
           }),
-          app.get('/data/indicator', function(req, res) {
+          app.get('/indicator/visual/mapping/indicator.do', function(req, res) {
                 res.json({
                   code: 0,
                   data: indicator
                 });
           }),
-          app.get('/data/group', function(req, res) {
+          app.get('/indicator/visual/mapping/group.do', function(req, res) {
                 res.json({
                     code: 0,
                     data: groupData
                 })
           }),
-          app.get('/data/app', function(req, res) {
+          app.get('/indicator/visual/mapping/app.do', function(req, res) {
                 res.json({
                     code: 0,
                     data: appData

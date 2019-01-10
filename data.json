@@ -1,37 +1,6 @@
 {
-    "menu": [
-        {
-            "database":"online-表",
-            "tables":[
-                {
-                    "tableName":"tb1",
-                    "type":"实时",
-                    "description":"手机存货量实时表"
-                },
-                {
-                    "tableName":"tb2",
-                    "type":"实时",
-                    "description":"电脑存货量实时表"
-                }
-            ]
-        },
-        {
-            "database":"offline-表",
-            "tables":[
-                {
-                    "tableName":"tb1",
-                    "type":"离线",
-                    "description":"离线表1"
-                },
-                {
-                    "tableName":"tb2",
-                    "type":"离线",
-                    "description":"离线表2"
-                }
-            ]
-        }
-    ],
-    "table": [
+    "menu":[{"database":"onedata_offline","tables":[{"tableName":"tb_station_day_indicator_offline","type":"离线","description":"站点数据离线表"}]}],
+    "field": [
         {
             "field":"1",
             "cnName":"2",
@@ -40,7 +9,8 @@
             "type":"5",
             "metamapSql":"6",
             "remark":"7",
-            "queryCode":"8"
+            "queryCode":"8",
+            "fieldCode": "9"
         },
         {
             "field":"a",
@@ -50,7 +20,8 @@
             "type":"e",
             "metamapSql":"f",
             "remark":"g",
-            "queryCode":"h"
+            "queryCode":"h",
+            "fieldCode":"9"
         }
     ],
     "form": [
@@ -72,21 +43,21 @@
     ],
     "treeData": [
         {
-            "label": "一级 1",
+            "label": "offline-表",
             "children": [{
                 "children": [{
-                "label": "二级 1-1",
-                "children": [{
-                    "label": "三级 1-1-1"
-                }]
+                    "label": "tb1",
+                    "children": [{
+                        "label": "1"
+                    }]
             }]
         }, 
         {
-            "label": "一级 2",
+            "label": "offline-表",
             "children": [{
-                "label": "二级 2-1",
+                "label": "tb1",
                 "children": [{
-                    "label": "三级 2-1-1"
+                    "label": "1"
             }]
         }, {
             "label": "二级 2-2",
