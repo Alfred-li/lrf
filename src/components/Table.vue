@@ -48,7 +48,7 @@
             <template slot-scope="scope">
               <el-button
                 size="mini"
-                @click="productClick(scope.$index, scope.row)">产品</el-button>
+                @click="productClick(scope.$index, scope.row)">查看</el-button>
             </template>
           </el-table-column>
           <el-table-column label="操作">
